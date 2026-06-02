@@ -247,7 +247,7 @@ ${text}
       );
 
       output.innerText =
-        "AI generated broken JSON";
+        "AI service is temporarily unavailable. Please try again.";
 
       return;
     }
@@ -379,8 +379,7 @@ function showQuestion() {
     btn.innerText = option;
 
     btn.className =
-      "block w-full bg-gray-200 hover:bg-gray-300 text-black p-2 rounded";
-
+      "block w-full bg-gray-200 hover:bg-gray-300 text-black p-3 rounded text-sm sm:text-base";
     btn.onclick = () =>
       selectAnswer(
         option,
@@ -770,7 +769,7 @@ function showFlashcard() {
   // RESET CLASSES
 
   flashcard.className =
-    `w-[320px] h-[450px]
+    `w-full max-w-[320px] h-[450px]
     rounded-3xl shadow-2xl
     cursor-pointer
 
@@ -1043,7 +1042,9 @@ IMPORTANT RULES:
   <div class="flex justify-start">
 
     <div class="
-    max-w-[85%]
+    w-full
+    max-w-full
+    sm:max-w-[85%]
     bg-white dark:bg-slate-700
     text-black dark:text-white
     px-6 py-5
@@ -1054,6 +1055,7 @@ IMPORTANT RULES:
     text-[15px]
     whitespace-pre-wrap
     break-words
+    overflow-hidden 
     border border-gray-200 dark:border-slate-600
     text-left">
 
