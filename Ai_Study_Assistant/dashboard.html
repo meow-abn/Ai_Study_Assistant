@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+  <title>Dashboard</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+
+<script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+
+  <script src="supabaseClient.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+
+  <script>
+    pdfjsLib.GlobalWorkerOptions.workerSrc =
+      "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
+  </script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+  <script src="ai.js" defer></script>
+
+  <script src="dashboard.js" defer></script>
+
+  <style>
+
+    body {
+
+      background:
+        linear-gradient(
+          135deg,
+          #dbeafe,
+          #f5f3ff,
+          #e0f2fe
+        );
+
+      min-height: 100vh;
+
+      transition: all 0.3s ease;
+    }
+
+    body.dark {
+
+      background:
+        linear-gradient(
+          135deg,
+          #020617,
+          #0f172a,
+          #1e293b
+        );
+
+      color: white;
+    }
+
+    /* GLASS */
+
+    .glass {
+
+      background:
+        rgba(255,255,255,0.2);
+
+      backdrop-filter: blur(14px);
+
+      border:
+        1px solid rgba(255,255,255,0.2);
+
+      box-shadow:
+        0 8px 32px rgba(0,0,0,0.1);
+    }
+
+    body.dark .glass {
+
+      background:
+        rgba(15,23,42,0.6);
+    }
+
+    /* DARK CARD */
+
+    .dark-card {
+
+      background: white;
+    }
+
+    body.dark .dark-card {
+
+      background:
+        #1e293b;
+
+      color: white;
+    }
+
+    /* CARD HOVER */
+
+    .card-hover {
+
+      transition:
+        transform 0.25s ease,
+        box-shadow 0.25s ease;
+    }
+
+    .card-hover:hover {
+
+      transform:
+        translateY(-6px)
+        scale(1.01);
+
+      box-shadow:
+        0 15px 40px rgba(0,0,0,0.15);
+    }
+
+    /* SCROLLBAR */
+
+    ::-webkit-scrollbar {
+
+      width: 10px;
+    }
+
+    ::-webkit-scrollbar-thumb {
+
+      background:
+        rgba(100,100,100,0.4);
+
+      border-radius: 20px;
+    }
+
+    /* FADE */
+
+    .fade-in {
+
+      animation:
+        fadeIn 0.4s ease;
+    }
+
+    @keyframes fadeIn {
+
+      from {
+
+        opacity: 0;
+
+        transform:
+          translateY(10px);
+      }
+
+      to {
+
+        opacity: 1;
+
+        transform:
+          translateY(0);
+      }
+    }
+
+  </style>
+
+</head>
+
+<body
+  class="p-6 transition duration-300"
+  id="body">
+
+  <!-- TOP BAR -->
+
+  <div class="flex justify-between items-center mb-6">
+
+    <h1
+      id="site-heading"
+      class="text-3xl font-bold">
+
+      AI Study Assistant
+
+    </h1>
+
+    <button
+      onclick="toggleDarkMode()"
+      class="px-4 py-2 rounded bg-gray-800 text-white hover:scale-105 transition">
+
+      🌙 Toggle Mode
+
+    </button>
+
+  </div>
+
+  <!-- NOTE INPUT -->
+
+  <div
+  id="pdf-section"
+  class="glass card-hover p-5 rounded-3xl fade-in">
+
+    <input
+      type="file"
+      id="pdf-upload"
+      
+      accept=".pdf"
+      class="mb-4 border p-2 rounded" />
+
+    <button
+      onclick="readPDF()"
+      class="bg-purple-500 text-white px-4 py-2 rounded">
+
+      Upload PDF
+
+    </button>
+
+    <textarea
+      id="note"
+      placeholder="Write notes..."
+      class="
+      border
+      w-full
+      mt-4
+      p-4
+      rounded-2xl
+      bg-white
+      dark:bg-slate-800
+      text-black
+      dark:text-white
+      border-gray-300
+      dark:border-slate-600
+      focus:outline-none
+      focus:ring-2
+      focus:ring-blue-400
+      h-40
+      "></textarea>
+
+    <button
+  id="save-note-btn"
+  class="bg-blue-500 text-white px-4 py-2 mt-4 rounded hover:scale-105 transition">
+
+  Save Note
+
+</button>
+
+  </div>
+
+  <!-- NOTES -->
+
+  <h2 class="text-2xl font-bold mt-8 mb-4">
+
+    Your Notes
+
+  </h2>
+  <!-- NOTES -->
+
+<input
+  type="text"
+  id="search-notes"
+  placeholder="Search notes..."
+  class="
+    w-full
+    p-3
+    rounded-xl
+    mb-4
+    text-black
+    border
+    border-gray-300
+    focus:outline-none
+    focus:ring-2
+    focus:ring-blue-400
+  "
+/>
+
+<div id="notes"></div>
+
+  <div id="notes"></div>
+
+  <!-- AI OUTPUT -->
+  <div
+    id="ai-output"
+    class="mt-6 p-5 rounded-3xl glass fade-in">
+
+  </div>
+
+  <!-- QUIZ -->
+
+  <div
+    id="quiz-container"
+    class="mt-6 hidden dark-card p-5 rounded-3xl shadow-xl">
+
+    <h2 class="text-2xl font-bold mb-4">
+
+      Quiz
+
+    </h2>
+
+    <div class="flex justify-between mb-2">
+
+      <div
+        id="progress-text"
+        class="font-semibold">
+
+        Question 1/10
+
+      </div>
+
+      <div
+        id="timer"
+        class="font-bold text-red-500">
+
+        15s
+
+      </div>
+
+    </div>
+
+    <div class="w-full bg-gray-300 rounded h-3 mb-4">
+
+      <div
+        id="progress-bar"
+        class="bg-blue-500 h-3 rounded"
+        style="width:0%">
+
+      </div>
+
+    </div>
+
+    <div
+      id="question"
+      class="font-semibold mb-4 text-lg">
+
+    </div>
+
+    <div
+      id="options"
+      class="space-y-2">
+
+    </div>
+
+    <button
+      id="next-btn"
+      onclick="nextQuestion()"
+      class="bg-blue-500 text-white px-4 py-2 mt-4 rounded hidden">
+
+      Next
+
+    </button>
+
+    <div
+      id="score"
+      class="mt-4 font-bold">
+
+    </div>
+
+  </div>
+
+  <!-- FLASHCARDS -->
+
+  <div
+    id="flashcard-container"
+    class="hidden mt-10">
+
+    <h2 class="text-2xl font-bold mb-6">
+
+      Flashcards
+
+    </h2>
+
+    <div class="flex justify-center">
+
+      <div
+        id="flashcard"
+        onclick="flipCard()"
+
+        class="
+        w-[320px]
+        h-[450px]
+
+        bg-gradient-to-br
+        from-green-400
+        to-emerald-600
+
+        text-white
+
+        rounded-3xl
+        shadow-2xl
+
+        cursor-pointer
+
+        flex
+        items-center
+        justify-center
+
+        text-center
+        text-2xl
+        font-bold
+
+        transition-all
+        duration-500
+
+        hover:scale-105
+        hover:rotate-1
+
+        p-6
+        select-none
+        ">
+
+        Loading...
+
+      </div>
+
+    </div>
+
+    <div class="mt-6 flex justify-center gap-4">
+
+      <button
+        onclick="prevFlashcard()"
+        class="bg-gray-500 text-white px-4 py-2 rounded">
+
+        Previous
+
+      </button>
+
+      <button
+        onclick="nextFlashcard()"
+        class="bg-blue-500 text-white px-4 py-2 rounded">
+
+        Next
+
+      </button>
+
+    </div>
+
+  </div>
+
+  <!-- AI TUTOR -->
+
+  <div
+  id="ai-tutor-section"
+  class="mt-10 dark-card p-5 rounded-3xl shadow-xl">
+
+    <h2 class="text-2xl font-bold mb-4">
+
+      AI Study Tutor
+
+    </h2>
+
+    <div
+      id="chat-box"
+      class="
+      h-[300px]
+      overflow-y-auto
+      border
+      rounded-xl
+      p-4
+      mb-4
+      bg-gray-100
+      dark:bg-slate-800
+      flex
+      flex-col
+      gap-4
+      ">
+
+    </div>
+
+    <div class="flex gap-2">
+
+      <input
+        type="text"
+        id="chat-input"
+        placeholder="Ask anything..."
+        class="flex-1 border p-3 rounded text-black" />
+
+      <button
+        onclick="askTutor()"
+        class="bg-blue-500 text-white px-4 py-2 rounded">
+
+        Send
+
+      </button>
+
+    </div>
+
+  </div>
+
+  <!-- LOGOUT -->
+
+  <button
+    onclick="logout()"
+    class="bg-red-500 text-white px-4 py-2 mt-6 rounded hover:scale-105 transition">
+
+    Logout
+
+  </button>
+
+  <!-- DARK MODE -->
+
+  <script>
+
+    function toggleDarkMode() {
+
+      document.body.classList.toggle("dark");
+
+      if (
+        document.body.classList.contains("dark")
+      ) {
+
+        localStorage.setItem(
+          "theme",
+          "dark"
+        );
+
+      } else {
+
+        localStorage.setItem(
+          "theme",
+          "light"
+        );
+      }
+    }
+
+    if (
+      localStorage.getItem("theme")
+      === "dark"
+    ) {
+
+      document.body.classList.add("dark");
+    }
+
+  </script>
+
+  
+
+</body>
+</html>
