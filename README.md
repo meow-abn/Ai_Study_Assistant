@@ -80,6 +80,9 @@ The key is configured through Vercel Environment Variables.
 ## 🌐 Deployment
 
 The application is deployed using Vercel.
+## 🌐 Live Demo
+
+[Open AI Study Assistant][(https://your-project.vercel.app)](https://ai-study-assistant-6193.vercel.app/)
 
 GitHub is used for source-code version control and Vercel automatically deploys new commits pushed to the `main` branch.
 
