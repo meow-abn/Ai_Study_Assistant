@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+  <title>Admin Panel</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+
+  <script src="supabaseClient.js"></script>
+
+  <script src="admin_pan.js" defer></script>
+
+</head>
+
+<body class="bg-slate-900 text-white p-6">
+
+  <h1 class="text-4xl font-bold mb-6">
+    Admin Panel
+  </h1>
+
+  <!-- Stats -->
+
+  <div class="grid grid-cols-3 gap-4 mb-8">
+
+    <div class="bg-slate-800 p-4 rounded-2xl">
+      <h2 class="text-xl">Users</h2>
+
+      <p id="total-users"
+        class="text-3xl font-bold">
+        0
+      </p>
+    </div>
+
+    <div class="bg-slate-800 p-4 rounded-2xl">
+      <h2 class="text-xl">Notes</h2>
+
+      <p id="total-notes"
+        class="text-3xl font-bold">
+        0
+      </p>
+    </div>
+
+    <div class="bg-slate-800 p-4 rounded-2xl">
+      <h2 class="text-xl">Quizzes</h2>
+
+      <p id="total-quizzes"
+        class="text-3xl font-bold">
+        0
+      </p>
+    </div>
+
+  </div>
+
+  <!-- Website Settings -->
+
+  <div class="bg-slate-800 p-6 rounded-2xl mb-8">
+
+    <h2 class="text-2xl mb-4">
+      Website Settings
+    </h2>
+
+    <input
+      id="site-name"
+      placeholder="Website Name"
+      class="w-full p-3 rounded text-black mb-4"
+    />
+
+    <input
+      id="quiz-count"
+      type="number"
+      placeholder="Quiz Questions"
+      class="w-full p-3 rounded text-black mb-4"
+    />
+    <label class="block mb-2">
+  <input type="checkbox" id="enable-quiz" />
+  Enable Quiz
+</label>
+
+<label class="block mb-2">
+  <input type="checkbox" id="enable-flashcards" />
+  Enable Flashcards
+</label>
+
+<label class="block mb-2">
+  <input type="checkbox" id="enable-ai-tutor" />
+  Enable AI Tutor
+</label>
+
+<label class="block mb-4">
+  <input type="checkbox" id="enable-pdf-upload" />
+  Enable PDF Upload
+</label>
+
+    <button
+      onclick="saveSettings()"
+      class="bg-blue-500 px-4 py-2 rounded-xl">
+
+      Save Settings
+
+    </button>
+
+  </div>
+
+  <!-- Notes -->
+
+  <div class="bg-slate-800 p-6 rounded-2xl">
+
+    <h2 class="text-2xl mb-4">
+      All Notes
+    </h2>
+
+    <div id="all-notes"></div>
+
+  </div>
+
+</body>
+
+</html>

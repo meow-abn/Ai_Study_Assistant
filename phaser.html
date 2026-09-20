@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>My First Game</title>
+  <script src="https://cdn.jsdelivr.net/npm/phaser@3/dist/phaser.js"></script>
+</head>
+<body>
+
+<script>
+const config = {
+  type: Phaser.AUTO,
+  width: 800,
+  height: 600,
+  physics: {
+    default: "arcade",
+    arcade: {
+      gravity: { y: 0 }
+    }
+  },
+  scene: {
+    preload,
+    create,
+    update
+  }
+};
+
+const game = new Phaser.Game(config);
+
+let player;
+let cursors;
+
+function preload() {
+  this.load.image("player", "https://labs.phaser.io/assets/sprites/block.png");
+}
+
+function create() {
+  player = this.physics.add.sprite(400, 300, "player");
+  cursors = this.input.keyboard.createCursorKeys();
+}
+
+function update() {
+  player.setVelocity(0);
+
+  if (cursors.left.isDown) player.setVelocityX(-200);
+  if (cursors.right.isDown) player.setVelocityX(200);
+  if (cursors.up.isDown) player.setVelocityY(-200);
+  if (cursors.down.isDown) player.setVelocityY(200);
+}
+</script>
+
+</body>
+</html>
